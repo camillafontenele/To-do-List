@@ -31,29 +31,32 @@
 .row{
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 10px;
     background: #edeef0;
     border-radius: 30px;
-    padding-left: 20px;
+     padding: 8px 10px 8px 16px;
     margin-bottom: 25px;
 }
 input{
-    flex: 1;
+    flex: 1 1 auto;
+    min-width: 0;
     border: none;
     outline: none;
     background: transparent;
-    padding: 10px;
+    padding: 12px 10px;
     font-weight: 14px;
 }
 button{
     border: none;
     outline: none;
-    padding: 16px 50px;
+    padding: 12px 18px;
     background: #ff5945;
     color: #fff;
     font-size: 16px;
     cursor: pointer;
     border-radius: 40px;
+    flex: 0 0 auto;
+    white-space: nowrap;  
 }
 ul li{
     list-style: none;
@@ -97,4 +100,24 @@ ul li span {
 ul li span:hover{
     background: #edeef0;
     color: #fff;
+}
+
+@media (max-width: 420px){
+  .row{ padding: 8px 8px 8px 14px; }
+  button{ padding: 12px 14px; font-size: 15px; }
+}
+
+@media (max-width: 340px){
+  .row{
+    flex-wrap: wrap;
+    border-radius: 16px;
+    gap: 8px;
+  }
+  button{
+    width: 100%;
+  }
+}
+
+@media (max-height: 700px){
+  .todo-app{ margin: 40px auto 20px; }
 }
