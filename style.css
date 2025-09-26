@@ -102,6 +102,47 @@ ul li span:hover{
     color: #fff;
 }
 
+
+.week-days {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.week-days .day-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 56px;
+  height: 76px;
+  border: none;
+  border-radius: 50px;
+  background: #edeef0;
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform 0.05s ease-in-out;
+}
+
+.week-days .day-btn:active { transform: scale(0.98); }
+
+.week-days .day-btn .dow { font-size: 14px; line-height: 1; }
+.week-days .day-btn .dom { font-size: 13px; line-height: 1; margin-top: 4px; }
+
+.week-days .day-btn.active {
+  background: #ff5945;
+  color: #fff;
+}
+
+
+.current-day-title {
+  color: #002765;
+  margin: 8px 0 10px;
+}
+
+
 @media (max-width: 420px){
   .row{ padding: 8px 8px 8px 14px; }
   button{ padding: 12px 14px; font-size: 15px; }
