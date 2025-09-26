@@ -15,6 +15,7 @@ function AddTask(){
         li.appendChild(span);
     }
     inputBox.value = "";
+    inputBox.focus();
     saveData();
 }
 
@@ -35,6 +36,8 @@ listContainer.addEventListener("click", function(e){
         saveData();
     }
 }, false);   
+
+window.onload = () => inputBox.focus();
 
 function saveData(){
     localStorage.setItem("data", listContainer.innerHTML);
