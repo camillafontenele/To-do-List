@@ -85,12 +85,10 @@ function selectDay(dayIso) {
 
   showTask();
 
-// Foca na caixa de entrada
-  requestAnimationFrame(() => {
-    inputBox.focus();
-    const len = inputBox.value.length;
-    inputBox.setSelectionRange(len, len);
-  });
+  // Foca na caixa de entrada
+inputBox.focus();
+   
+
 }
 // Capitaliza a primeira letra de uma string
 function capitalizeFirst(text) {
@@ -105,6 +103,7 @@ function updateHeaderDate(dateObj) {
   const monthShortRaw = new Intl.DateTimeFormat("pt-BR", { month: "short" }).format(dateObj);
   const monthShort = capitalizeFirst(monthShortRaw.replace(".", ""));
   const year = dateObj.getFullYear();
+  
 // Atualiza os elementos do DOM com a data formatada
   bigDayEl.textContent = dia;
   dayNameEl.textContent = capitalizeFirst(weekday);
@@ -133,9 +132,9 @@ function AddTask() {
   li.appendChild(checkBtn);
   li.appendChild(textSpan);
   li.appendChild(del);
-// Adiciona a nova tarefa ao contêiner da lista
+
   listContainer.appendChild(li);
-// Limpa a caixa de entrada e foca nela
+
   inputBox.value = "";
   inputBox.focus();
   saveData();
