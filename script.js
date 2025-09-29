@@ -6,13 +6,13 @@ const bigDayEl = document.getElementById("big-day");
 const dayNameEl = document.getElementById("day-name");
 const monthYearEl = document.getElementById("month-year");
 
-// Abreviações para exibição na barra semanal (segunda a domingo)
+
 const diasSemanaAbrev = ["SEG", "TER", "QUA", "QUI", "SEX", "SAB", "DOM"];
 
-// ISO da data selecionada (yyyy-mm-dd)
+
 let currentDay = "";
 
-
+//função que retorna a segunda-feira da semana da data fornecida
 function getMonday(d) {
   const date = new Date(d);
   const day = (date.getDay() + 6) % 7;
@@ -21,6 +21,7 @@ function getMonday(d) {
   return date;
 }
 
+// Converte um objeto Date para uma string no formato YYYY-MM-DD considerando o fuso local  
 function toLocalISODate(dateObj) {
   const y = dateObj.getFullYear();
   const m = String(dateObj.getMonth() + 1).padStart(2, "0");
@@ -28,13 +29,13 @@ function toLocalISODate(dateObj) {
   return `${y}-${m}-${d}`;
 }
 
-
+// Renderiza os botões dos dias da semana
 function renderWeekDays() {
   const hoje = new Date();
   const monday = getMonday(hoje);
 
   weekDaysBar.innerHTML = "";
-
+// Cria botões para cada dia da semana
   for (let i = 0; i < 7; i++) {
     const data = new Date(monday);
     data.setDate(monday.getDate() + i);
@@ -52,7 +53,7 @@ function renderWeekDays() {
     `;
     btn.onclick = () => selectDay(iso);
 
-    
+// Destaca o botão do dia atual
     const isToday = sameDate(data, hoje);
     if (isToday) btn.classList.add("active");
 
@@ -60,7 +61,7 @@ function renderWeekDays() {
   }
 }
 
-
+// Verifica se duas datas são iguais (ano, mês, dia)
 function sameDate(a, b) {
   return (
     a.getFullYear() === b.getFullYear() &&
@@ -69,33 +70,31 @@ function sameDate(a, b) {
   );
 }
 
-
+// Seleciona um dia e atualiza a interface
 function selectDay(dayIso) {
   currentDay = dayIso;
 
-  // Atualiza estado visual na barra
+// Atualiza o estado ativo dos botões dos dias
   document.querySelectorAll(".week-days .day-btn").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.date === dayIso);
   });
 
-  // Atualiza textos do header
+// Atualiza a data no cabeçalho  
   const data = new Date(dayIso + "T00:00:00");
   updateHeaderDate(data);
 
   showTask();
 
+// Foca na caixa de entrada
   requestAnimationFrame(() => {
     inputBox.focus();
     const len = inputBox.value.length;
     inputBox.setSelectionRange(len, len);
   });
 }
+//
 
-function capitalizeFirst(text) {
-  if (!text) return text;
-  return text.charAt(0).toUpperCase() + text.slice(1);
-}
-
+// Atualiza a data exibida no cabeçalho
 function updateHeaderDate(dateObj) {
   if (!bigDayEl || !dayNameEl || !monthYearEl) return;
   const dia = String(dateObj.getDate()).padStart(2, "0");
