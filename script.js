@@ -1,68 +1,67 @@
 
-const inputBox = document.getElementById("input-box");
-const listContainer = document.getElementById("list-container");
-const weekDaysBar = document.getElementById("week-days");
-const bigDayEl = document.getElementById("big-day");
-const dayNameEl = document.getElementById("day-name");
-const monthYearEl = document.getElementById("month-year");
+const caixaEntrada = document.getElementById("caixa-entrada");
+const listaTarefas = document.getElementById("lista-tarefas");
+const barraDiasSemana = document.getElementById("dias-semana");
+const diaGrandeEl = document.getElementById("dia-grande");
+const nomeDiaEl = document.getElementById("nome-dia");
+const mesAnoEl = document.getElementById("mes-ano");
+const botaoAdicionar = document.querySelector(".linha button");
 
 
 const diasSemanaAbrev = ["SEG", "TER", "QUA", "QUI", "SEX", "SAB", "DOM"];
 
 
-let currentDay = "";
+let diaAtualIso = "";
 
 //função que retorna a segunda-feira da semana da data fornecida
-function getMonday(d) {
-  const date = new Date(d);
-  const day = (date.getDay() + 6) % 7;
-  date.setDate(date.getDate() - day);
-  date.setHours(0, 0, 0, 0);
-  return date;
+function obterSegundaFeira(d) {
+  const data = new Date(d);
+  const diaSemana = (data.getDay() + 6) % 7;
+  data.setDate(data.getDate() - diaSemana);
+  data.setHours(0, 0, 0, 0);
+  return data;
 }
 
 // Converte um objeto Date para uma string no formato YYYY-MM-DD considerando o fuso local  
-function toLocalISODate(dateObj) {
-  const y = dateObj.getFullYear();
-  const m = String(dateObj.getMonth() + 1).padStart(2, "0");
-  const d = String(dateObj.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
+function paraDataLocalISO(objData) {
+  const ano = objData.getFullYear();
+  const mes = String(objData.getMonth() + 1).padStart(2, "0");
+  const dia = String(objData.getDate()).padStart(2, "0");
+  return `${ano}-${mes}-${dia}`;
 }
 
 // Renderiza os botões dos dias da semana
-function renderWeekDays() {
+function renderizarDiasSemana() {
   const hoje = new Date();
-  const monday = getMonday(hoje);
+  const segunda = obterSegundaFeira(hoje);
 
-  weekDaysBar.innerHTML = "";
-// Cria botões para cada dia da semana
+  barraDiasSemana.innerHTML = "";
   for (let i = 0; i < 7; i++) {
-    const data = new Date(monday);
-    data.setDate(monday.getDate() + i);
+    const data = new Date(segunda);
+    data.setDate(segunda.getDate() + i);
 
-    const label = diasSemanaAbrev[i];
+    const rotulo = diasSemanaAbrev[i];
     const numero = data.getDate();
-    const iso = toLocalISODate(data);
+    const iso = paraDataLocalISO(data);
 
-    const btn = document.createElement("button");
-    btn.className = "day-btn";
-    btn.dataset.date = iso;
-    btn.innerHTML = `
-      <span class="dow">${label}</span>
-      <span class="dom">${numero}</span>
+    const botao = document.createElement("button");
+    botao.className = "botao-dia";
+    botao.dataset.date = iso;
+    botao.innerHTML = `
+      <span class="sigla-dia">${rotulo}</span>
+      <span class="numero-dia">${numero}</span>
     `;
-    btn.onclick = () => selectDay(iso);
+    botao.onclick = () => selecionarDia(iso);
 
-// Destaca o botão do dia atual
-    const isToday = sameDate(data, hoje);
-    if (isToday) btn.classList.add("active");
+    const ehHoje = datasIguais(data, hoje);
+    if (ehHoje) botao.classList.add("ativo");
 
-    weekDaysBar.appendChild(btn);
+    barraDiasSemana.appendChild(botao);
   }
 }
 
 // Verifica se duas datas são iguais (ano, mês, dia)
-function sameDate(a, b) {
+function datasIguais(a, b) {
   return (
     a.getFullYear() === b.getFullYear() &&
     a.getMonth() === b.getMonth() &&
@@ -70,154 +69,174 @@ function sameDate(a, b) {
   );
 }
 
-// Seleciona um dia e atualiza a interface
-function selectDay(dayIso) {
-  currentDay = dayIso;
+// Verifica se um dia (YYYY-MM-DD) já passou em relação a hoje
+function diaSelecionadoJaPassou(diaIso) {
+  const hojeIso = paraDataLocalISO(new Date());
+  return diaIso < hojeIso; // formato YYYY-MM-DD permite comparação lexicográfica
+}
 
-// Atualiza o estado ativo dos botões dos dias
-  document.querySelectorAll(".week-days .day-btn").forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.date === dayIso);
+// Atualiza o estado de habilitado/desabilitado do input e botão
+function atualizarEstadoControles(diaIso) {
+  const desabilitar = diaSelecionadoJaPassou(diaIso);
+  if (caixaEntrada) caixaEntrada.disabled = desabilitar;
+  if (botaoAdicionar) botaoAdicionar.disabled = desabilitar;
+  if (caixaEntrada) {
+    caixaEntrada.placeholder = desabilitar
+      ? "Dia passado — não é possível adicionar tarefas"
+      : "Adicione uma nova tarefa...";
+  }
+  return desabilitar;
+}
+
+// Seleciona um dia e atualiza a interface
+function selecionarDia(diaIso) {
+  diaAtualIso = diaIso;
+
+  document.querySelectorAll(".dias-semana .botao-dia").forEach((btn) => {
+    btn.classList.toggle("ativo", btn.dataset.date === diaIso);
   });
 
-// Atualiza a data no cabeçalho  
-  const data = new Date(dayIso + "T00:00:00");
-  updateHeaderDate(data);
+  const data = new Date(diaIso + "T00:00:00");
+  atualizarCabecalhoData(data);
 
-  showTask();
+  mostrarTarefas();
 
-  // Foca na caixa de entrada
-inputBox.focus();
-   
+  const desabilitado = atualizarEstadoControles(diaIso);
 
+  if (!desabilitado) {
+    caixaEntrada.focus();
+  } else {
+    caixaEntrada.blur();
+  }
 }
 // Capitaliza a primeira letra de uma string
-function capitalizeFirst(text) {
-  if (!text) return text;
-  return text.charAt(0).toUpperCase() + text.slice(1);
+function capitalizarPrimeira(texto) {
+  if (!texto) return texto;
+  return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
 // Atualiza a data exibida no cabeçalho
-function updateHeaderDate(dateObj) {
-  if (!bigDayEl || !dayNameEl || !monthYearEl) return;
-  const dia = String(dateObj.getDate()).padStart(2, "0");
-  const weekday = new Intl.DateTimeFormat("pt-BR", { weekday: "long" }).format(dateObj);
-  const monthShortRaw = new Intl.DateTimeFormat("pt-BR", { month: "short" }).format(dateObj);
-  const monthShort = capitalizeFirst(monthShortRaw.replace(".", ""));
-  const year = dateObj.getFullYear();
-  
-// Atualiza os elementos do DOM com a data formatada
-  bigDayEl.textContent = dia;
-  dayNameEl.textContent = capitalizeFirst(weekday);
-  monthYearEl.textContent = `${monthShort}, ${year}`;
+function atualizarCabecalhoData(objData) {
+  if (!diaGrandeEl || !nomeDiaEl || !mesAnoEl) return;
+  const dia = String(objData.getDate()).padStart(2, "0");
+  const nomeSemana = new Intl.DateTimeFormat("pt-BR", { weekday: "long" }).format(objData);
+  const mesCurtoBruto = new Intl.DateTimeFormat("pt-BR", { month: "short" }).format(objData);
+  const mesCurto = capitalizarPrimeira(mesCurtoBruto.replace(".", ""));
+  const ano = objData.getFullYear();
+
+  diaGrandeEl.textContent = dia;
+  nomeDiaEl.textContent = capitalizarPrimeira(nomeSemana);
+  mesAnoEl.textContent = `${mesCurto}, ${ano}`;
 }
 // Adiciona uma nova tarefa à lista
-function AddTask() {
-  if (inputBox.value.trim() === "") {
+function adicionarTarefa() {
+  if ((caixaEntrada && caixaEntrada.disabled) || (botaoAdicionar && botaoAdicionar.disabled)) {
+    return;
+  }
+  if (caixaEntrada.value.trim() === "") {
     alert("Você deve escrever algo!");
     return;
   }
-// Cria os elementos da tarefa
   const li = document.createElement("li");
-  const checkBtn = document.createElement("button");
-  checkBtn.className = "check-btn";
-  checkBtn.setAttribute("aria-label", "Concluir tarefa");
+  const botaoChecar = document.createElement("button");
+  botaoChecar.className = "botao-checar";
+  botaoChecar.setAttribute("aria-label", "Concluir tarefa");
 
-  const textSpan = document.createElement("span");
-  textSpan.className = "task-text";
-  textSpan.textContent = inputBox.value;
+  const spanTexto = document.createElement("span");
+  spanTexto.className = "texto-tarefa";
+  spanTexto.textContent = caixaEntrada.value;
 
-  const del = document.createElement("span");
-  del.className = "delete-btn";
-  del.innerHTML = "\u00d7";
-// Adiciona os elementos à lista
-  li.appendChild(checkBtn);
-  li.appendChild(textSpan);
-  li.appendChild(del);
+  const botaoExcluir = document.createElement("span");
+  botaoExcluir.className = "botao-excluir";
+  botaoExcluir.innerHTML = "\u00d7";
 
-  listContainer.appendChild(li);
+  li.appendChild(botaoChecar);
+  li.appendChild(spanTexto);
+  li.appendChild(botaoExcluir);
 
-  inputBox.value = "";
-  inputBox.focus();
-  saveData();
+  listaTarefas.appendChild(li);
+
+  caixaEntrada.value = "";
+  caixaEntrada.focus();
+  salvarDados();
 }
 // Adiciona evento para adicionar tarefa ao clicar no botão
-inputBox.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") AddTask();
+caixaEntrada.addEventListener("keypress", (e) => {
+  if (caixaEntrada.disabled) return;
+  if (e.key === "Enter") adicionarTarefa();
 });
 
 // Adiciona evento para manipular cliques na lista (concluir ou excluir tarefa)
-listContainer.addEventListener(
+listaTarefas.addEventListener(
   "click",
   (e) => {
     const target = e.target;
     const li = target.closest("li");
     if (!li) return;
 
-    if (target.classList.contains("delete-btn") || target.textContent === "\u00d7") {
+    if (target.classList.contains("botao-excluir") || target.textContent === "\u00d7") {
       li.remove();
-      saveData();
+      salvarDados();
       return;
     }
 
     if (
-      target.classList.contains("check-btn") ||
-      target.classList.contains("task-text") ||
+      target.classList.contains("botao-checar") ||
+      target.classList.contains("texto-tarefa") ||
       target.tagName === "LI"
     ) {
-      li.classList.toggle("checked");
-      saveData();
+      li.classList.toggle("concluida");
+      salvarDados();
     }
   },
   false
 );
 
 // Salva os dados das tarefas no localStorage
-function saveData() {
-  if (!currentDay) return;
-  const all = JSON.parse(localStorage.getItem("tasksByDay") || "{}");
-  all[currentDay] = listContainer.innerHTML;
-  localStorage.setItem("tasksByDay", JSON.stringify(all));
+function salvarDados() {
+  if (!diaAtualIso) return;
+  const novos = JSON.parse(localStorage.getItem("tarefasPorDia") || "{}");
+  const antigos = JSON.parse(localStorage.getItem("tasksByDay") || "{}");
+  novos[diaAtualIso] = listaTarefas.innerHTML;
+  antigos[diaAtualIso] = listaTarefas.innerHTML;
+  localStorage.setItem("tarefasPorDia", JSON.stringify(novos));
+  localStorage.setItem("tasksByDay", JSON.stringify(antigos));
 }
 // Mostra as tarefas do dia selecionado
-function showTask() {
-  const all = JSON.parse(localStorage.getItem("tasksByDay") || "{}");
-  listContainer.innerHTML = all[currentDay] || "";
-  normalizeListItems();
+function mostrarTarefas() {
+  const novos = JSON.parse(localStorage.getItem("tarefasPorDia") || "{}");
+  const antigos = JSON.parse(localStorage.getItem("tasksByDay") || "{}");
+  const html = (novos[diaAtualIso] ?? antigos[diaAtualIso] ?? "");
+  listaTarefas.innerHTML = html;
+  normalizarItensLista();
 }
 
 // Inicializa a aplicação ao carregar a página
 window.onload = () => {
-  renderWeekDays();
+  renderizarDiasSemana();
 
-  const today = new Date();
-  const todayIso = toLocalISODate(today);
-  updateHeaderDate(today);
-  selectDay(todayIso);
-  inputBox.focus();
+  const hoje = new Date();
+  const hojeIso = paraDataLocalISO(hoje);
+  atualizarCabecalhoData(hoje);
+  selecionarDia(hojeIso);
+  caixaEntrada.focus();
 };
 // Normaliza os itens da lista para garantir a estrutura correta
-function normalizeListItems() {
-  //
-  Array.from(listContainer.querySelectorAll("li")).forEach((li) => {
-    
-    if (li.querySelector(".check-btn") && li.querySelector(".task-text")) return;
-// Extrai o texto da tarefa, removendo o símbolo de exclusão
-    const text = li.textContent.replace("\u00d7", "").trim();
+function normalizarItensLista() {
+  Array.from(listaTarefas.querySelectorAll("li")).forEach((li) => {
+    if (li.querySelector(".botao-checar") && li.querySelector(".texto-tarefa")) return;
+    const texto = li.textContent.replace("\u00d7", "").trim();
     li.innerHTML = "";
-// Cria o botão de check
-    const checkBtn = document.createElement("button");
-    checkBtn.className = "check-btn";
-    checkBtn.setAttribute("aria-label", "Concluir tarefa");
-// Cria o span para o texto da tarefa
-    const textSpan = document.createElement("span");
-    textSpan.className = "task-text";
-    textSpan.textContent = text;
-// Cria o botão de excluir
-    const del = document.createElement("span");
-    del.className = "delete-btn";
-    del.innerHTML = "\u00d7";
-// Adiciona os elementos ao item da lista
-    li.appendChild(checkBtn);
-    li.appendChild(textSpan);
-    li.appendChild(del);
+    const botaoChecar = document.createElement("button");
+    botaoChecar.className = "botao-checar";
+    botaoChecar.setAttribute("aria-label", "Concluir tarefa");
+    const spanTexto = document.createElement("span");
+    spanTexto.className = "texto-tarefa";
+    spanTexto.textContent = texto;
+    const botaoExcluir = document.createElement("span");
+    botaoExcluir.className = "botao-excluir";
+    botaoExcluir.innerHTML = "\u00d7";
+    li.appendChild(botaoChecar);
+    li.appendChild(spanTexto);
+    li.appendChild(botaoExcluir);
   });
 }

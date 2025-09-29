@@ -8,30 +8,30 @@
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet"/>
 </head>
 <body>
-    <header class="app-header">
-        <div class="header-inner">
-            <div class="date-card">
-                <div class="date-main">
-                    <span class="big-day" id="big-day">07</span>
-                    <div class="date-texts">
-                        <span class="day-name" id="day-name">Segunda-feira</span>
-                        <span class="month-year" id="month-year">Nov, 2016</span>
+    <header class="cabecalho-app">
+        <div class="cabecalho-interno">
+            <div class="cartao-data">
+                <div class="data-principal">
+                    <span class="dia-grande" id="dia-grande">07</span>
+                    <div class="textos-data">
+                        <span class="nome-dia" id="nome-dia">Segunda-feira</span>
+                        <span class="mes-ano" id="mes-ano">Nov, 2016</span>
                     </div>
                 </div>
             </div>
-            <div class="week-days" id="week-days"></div>
+            <div class="dias-semana" id="dias-semana"></div>
         </div>
       </header>
-    <div class="container">
-    <div class="todo-app">
+    <div class="conteiner">
+    <div class="app-tarefas">
       
 
-      <div class="row">
-        <input type="text" id="input-box" placeholder="Adicione uma nova tarefa..." />
-        <button onclick="AddTask()">Adicionar</button>
+      <div class="linha">
+        <input type="text" id="caixa-entrada" placeholder="Adicione uma nova tarefa..." />
+        <button onclick="adicionarTarefa()">Adicionar</button>
       </div>
 
-      <ul id="list-container"></ul>
+      <ul id="lista-tarefas"></ul>
     </div>
   </div>
   <script src="script.js"></script>

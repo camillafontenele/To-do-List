@@ -12,60 +12,60 @@ body{
   
 }
 
-.app-header{
+.cabecalho-app{
   padding:16px;
   background:linear-gradient(135deg, var(--grad-start), var(--grad-end));
 }
 
-.header-inner{
+.cabecalho-interno{
   max-width:720px;
   margin:0 auto;
   color:#fff;
   padding:20px 24px 16px;
 }
 
-.date-card{
+.cartao-data{
   display:flex;
   align-items:center;
   justify-content:space-between;
 }
 
-.date-main{
+.data-principal{
   display:flex;
   align-items:center;
   gap:12px;
 }
 
-.big-day{
+.dia-grande{
   font-size:64px;
   line-height:1;
   font-weight:700;
 }
 
-.date-texts{
+.textos-data{
   display:flex;
   flex-direction:column;
   line-height:1.2;
 }
 
-.day-name{
+.nome-dia{
   font-size:px;
   font-weight:600;
 }
 
-.month-year{
+.mes-ano{
   font-size:14px;
   opacity:.9;
 }
 
-.week-days{
+.dias-semana{
   margin-top:16px;
   display:grid;
   grid-template-columns:repeat(7,1fr);
   gap:6px;
 }
 
-.day-btn{
+.botao-dia{
   background:transparent;
   color:#fff;
   border:0;
@@ -75,14 +75,14 @@ body{
   cursor:pointer;
 }
 
-.day-btn .dow{
+.botao-dia .sigla-dia{
   display:block;
   font-size:12px;
   letter-spacing:.6px;
   opacity:.85;
 }
 
-.day-btn .dom{
+.botao-dia .numero-dia{
   display:inline-flex;
   align-items:center;
   justify-content:center;
@@ -95,26 +95,26 @@ body{
   color:#fff;
 }
 
-.day-btn.active .dom{
+.botao-dia.ativo .numero-dia{
   border-color:#fff;
 }
 
-.container{
+.conteiner{
     max-width:720px;
     margin:12px auto;
     padding:0 16px;
 }
-.todo-app{
+.app-tarefas{
     background:#fff;
     border-radius:12px;
     padding:16px;
 
 } 
-.row{
+.linha{
     display:flex;
     gap:8px;
 }
-.row input{
+.linha input{
     flex:1;
     padding:10px 12px;
     border-radius:8px;
@@ -123,12 +123,12 @@ body{
     
 }
 
-.row input:focus{
+.linha input:focus{
     outline:none;
     border: solid 2px #4e085f;
 }
 
-.row button{
+.linha button{
     padding:10px 14px;
     border-radius:8px;
     border:0;
@@ -137,17 +137,17 @@ body{
     font-weight:600;
     cursor:pointer
 }
-.row button:hover{
+.linha button:hover{
     filter:brightness(.95)
 }
 
 
-#list-container{
+#lista-tarefas{
     list-style:none;
     padding:0;
     margin:12px 0 0
 }
-#list-container li{
+#lista-tarefas li{
     display:flex;
     align-items:center;
     gap:12px;
@@ -157,7 +157,7 @@ body{
     margin-bottom:8px
 }
 
-.check-btn{
+.botao-checar{
     width:28px;
     height:28px;
     border-radius:50%;
@@ -168,7 +168,7 @@ body{
     justify-content:center;color:#fff;
     cursor:pointer
 }
-.check-btn::before{
+.botao-checar::before{
     content:"";
     width:10px;
     height:6px;
@@ -178,27 +178,28 @@ body{
 }
 
 
-.task-text{
+.texto-tarefa{
     flex:1;
     cursor:pointer;
     user-select:none
 }
-.delete-btn{
+.botao-excluir{
+
     cursor:pointer;
-    font-weight:700;
+    font-size:20px;
     margin-left:auto
 }
 
-#list-container li.checked .task-text{
+#lista-tarefas li.concluida .texto-tarefa{
     opacity:.7;
     text-decoration:line-through
 }
 
-#list-container li.checked .check-btn{
+#lista-tarefas li.concluida .botao-checar{
     background:var(--second-color);
     border-color:var(--second-color);
 }
-#list-container li.checked .check-btn::before{
+#lista-tarefas li.concluida .botao-checar::before{
     border-left-color:#fff;
     border-bottom-color:#fff;
 }
