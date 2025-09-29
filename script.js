@@ -15,10 +15,17 @@ let currentDay = "";
 
 function getMonday(d) {
   const date = new Date(d);
-  const day = (date.getDay() + 6) % 7; // 0=Seg ... 6=Dom
+  const day = (date.getDay() + 6) % 7;
   date.setDate(date.getDate() - day);
   date.setHours(0, 0, 0, 0);
   return date;
+}
+
+function toLocalISODate(dateObj) {
+  const y = dateObj.getFullYear();
+  const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+  const d = String(dateObj.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
 }
 
 
@@ -34,7 +41,7 @@ function renderWeekDays() {
 
     const label = diasSemanaAbrev[i];
     const numero = data.getDate();
-    const iso = data.toISOString().split("T")[0];
+    const iso = toLocalISODate(data);
 
     const btn = document.createElement("button");
     btn.className = "day-btn";
@@ -56,6 +63,8 @@ function renderWeekDays() {
 
 function sameDate(a, b) {
   return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
     a.getDate() === b.getDate()
   );
 }
@@ -178,16 +187,16 @@ window.onload = () => {
   renderWeekDays();
 
   const today = new Date();
-  const todayIso = today.toISOString().split("T")[0];
+  const todayIso = toLocalISODate(today);
   updateHeaderDate(today);
   selectDay(todayIso);
   inputBox.focus();
 };
 
 function normalizeListItems() {
-  // Garante a nova estrutura (check-btn, task-text, delete-btn)
+  
   Array.from(listContainer.querySelectorAll("li")).forEach((li) => {
-    // pular se já estiver estruturado
+    
     if (li.querySelector(".check-btn") && li.querySelector(".task-text")) return;
 
     const text = li.textContent.replace("\u00d7", "").trim();
