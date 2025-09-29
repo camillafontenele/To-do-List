@@ -1,164 +1,200 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Quicksand', sans-serif;
+:root{
+  --grad-start:#153677;
+  --grad-end:#4e085f;
+  --card-radius:14px;
+  --second-color:#ff5945;
 }
+
+body{
+  margin:0;
+  font-family:"Quicksand", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background:#f5f6fb;
+  color:#1b1b1b;
+}
+
+.app-header{
+  padding:16px;
+  background:linear-gradient(135deg, var(--grad-start), var(--grad-end));
+}
+
+.header-inner{
+  max-width:720px;
+  margin:0 auto;
+  color:#fff;
+  padding:20px 24px 16px;
+}
+
+.date-card{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.date-main{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.big-day{
+  font-size:64px;
+  line-height:1;
+  font-weight:700;
+}
+
+.date-texts{
+  display:flex;
+  flex-direction:column;
+  line-height:1.2;
+}
+
+.day-name{
+  font-size:px;
+  font-weight:600;
+}
+
+.month-year{
+  font-size:14px;
+  opacity:.9;
+}
+
+.week-days{
+  margin-top:16px;
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:6px;
+}
+
+.day-btn{
+  background:transparent;
+  color:#fff;
+  border:0;
+  padding:6px 0 10px;
+  text-align:center;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.day-btn .dow{
+  display:block;
+  font-size:12px;
+  letter-spacing:.6px;
+  opacity:.85;
+}
+
+.day-btn .dom{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:28px;
+  height:28px;
+  margin-top:6px;
+  border-radius:50%;
+  border:2px solid transparent;
+  font-weight:700;
+  color:#fff;
+}
+
+.day-btn.active .dom{
+  border-color:#fff;
+}
+/* Container da aplicação (básico) */
 .container{
-    width: 100%;
-    height: 100vh;
-    background: linear-gradient(135deg, #153677, #4E085F);
-    padding: 10px;
+    max-width:720px;
+    margin:12px auto;
+    padding:0 16px;
 }
 .todo-app{
-    width: 100%;
-    max-width: 540px;
-    background: #fff;
-    margin: 100px auto 20px;
-    padding: 40px 30px 70px;
-    border-radius: 10px;
-}
-.todo-app h2{
-    color: #002765;
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-}
-.todo-app h2 img{
-    width: 30px;
-    margin-left: 10px;
-}
+    background:#fff;
+    border-radius:12px;
+    padding:16px;
+    box-shadow:0 8px 24px rgba(0,0,0,.06);
+} 
 .row{
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: #edeef0;
-    border-radius: 30px;
-     padding: 8px 10px 8px 16px;
-    margin-bottom: 25px;
+    display:flex;
+    gap:8px;
 }
-input{
-    flex: 1 1 auto;
-    min-width: 0;
-    border: none;
-    outline: none;
-    background: transparent;
-    padding: 12px 10px;
-    font-weight: 14px;
+.row input{
+    flex:1;
+    padding:10px 12px;
+    border-radius:8px;
+    border:1px solid #e6e6ee;
+    font:inherit
 }
-button{
-    border: none;
-    outline: none;
-    padding: 12px 18px;
-    background: #ff5945;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 40px;
-    flex: 0 0 auto;
-    white-space: nowrap;  
+.row button{
+    padding:10px 14px;
+    border-radius:8px;
+    border:0;
+    background:var(--second-color);
+    color:#fff;
+    font-weight:600;
+    cursor:pointer
 }
-ul li{
-    list-style: none;
-    font-size: 17px;
-    padding: 12px 8px 12px 50px;
-    user-select: none;
-    cursor: pointer;
-    position: relative;
-}
-ul li::before{
-    content: '';
-    position: absolute;
-    height: 28px;
-    width: 28px;
-    border-radius: 50%;
-    background-image: url(images/unchecked.png);
-    background-size: cover;
-    background-position: center;
-    top: 12px;
-    left: 8px;
-}
-ul li.checked{
-    color: #555;
-    text-decoration: line-through;
-}
-ul li.checked::before{
-    background-image: url(images/checked.png);
-}
-ul li span {
-    position: absolute;
-    right: 0;
-    top: 5px;
-    width: 40px;
-    height: 40px;
-    font-size: 22px;
-    color: #555;
-    line-height: 40px;
-    text-align: center;
-    border-radius: 50%;
-}
-ul li span:hover{
-    background: #edeef0;
-    color: #fff;
+.row button:hover{
+    filter:brightness(.95)
 }
 
-
-.week-days {
-  display: flex;
-  gap: 10px;
-  justify-content: space-between;
-  margin-bottom: 12px;
+/* Lista básica */
+#list-container{
+    list-style:none;
+    padding:0;
+    margin:12px 0 0
+}
+#list-container li{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:10px 12px;
+    border:1px solid #eee;
+    border-radius:8px;
+    margin-bottom:8px
 }
 
-.week-days .day-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  width: 56px;
-  height: 76px;
-  border: none;
-  border-radius: 50px;
-  background: #edeef0;
-  cursor: pointer;
-  font-weight: 700;
-  transition: transform 0.05s ease-in-out;
+/* Botão circular de check */
+.check-btn{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    border:2px solid #ddd;
+    background:#fff;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;color:#fff;
+    cursor:pointer
+}
+.check-btn::before{
+    content:"";
+    width:10px;
+    height:6px;
+    border-left:2px solid transparent;
+    border-bottom:2px solid transparent;
+    transform:rotate(-45deg)
 }
 
-.week-days .day-btn:active { transform: scale(0.98); }
-
-.week-days .day-btn .dow { font-size: 14px; line-height: 1; }
-.week-days .day-btn .dom { font-size: 13px; line-height: 1; margin-top: 4px; }
-
-.week-days .day-btn.active {
-  background: #ff5945;
-  color: #fff;
+/* Texto e excluir */
+.task-text{
+    flex:1;
+    cursor:pointer;
+    user-select:none
+}
+.delete-btn{
+    cursor:pointer;
+    font-weight:700;
+    margin-left:auto
 }
 
-
-.current-day-title {
-  color: #002765;
-  margin: 8px 0 10px;
+/* Estado checked */
+#list-container li.checked .task-text{
+    opacity:.7;
+    text-decoration:line-through
 }
 
-
-@media (max-width: 420px){
-  .row{ padding: 8px 8px 8px 14px; }
-  button{ padding: 12px 14px; font-size: 15px; }
+#list-container li.checked .check-btn{
+    background:var(--second-color);
+    border-color:var(--second-color);
+}
+#list-container li.checked .check-btn::before{
+    border-left-color:#fff;
+    border-bottom-color:#fff
 }
 
-@media (max-width: 340px){
-  .row{
-    flex-wrap: wrap;
-    border-radius: 16px;
-    gap: 8px;
-  }
-  button{
-    width: 100%;
-  }
-}
-
-@media (max-height: 700px){
-  .todo-app{ margin: 40px auto 20px; }
-}
