@@ -92,8 +92,11 @@ function selectDay(dayIso) {
     inputBox.setSelectionRange(len, len);
   });
 }
-//
-
+// Capitaliza a primeira letra de uma string
+function capitalizeFirst(text) {
+  if (!text) return text;
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
 // Atualiza a data exibida no cabeçalho
 function updateHeaderDate(dateObj) {
   if (!bigDayEl || !dayNameEl || !monthYearEl) return;
@@ -102,18 +105,18 @@ function updateHeaderDate(dateObj) {
   const monthShortRaw = new Intl.DateTimeFormat("pt-BR", { month: "short" }).format(dateObj);
   const monthShort = capitalizeFirst(monthShortRaw.replace(".", ""));
   const year = dateObj.getFullYear();
-
+// Atualiza os elementos do DOM com a data formatada
   bigDayEl.textContent = dia;
   dayNameEl.textContent = capitalizeFirst(weekday);
   monthYearEl.textContent = `${monthShort}, ${year}`;
 }
-
+// Adiciona uma nova tarefa à lista
 function AddTask() {
   if (inputBox.value.trim() === "") {
     alert("Você deve escrever algo!");
     return;
   }
-
+// Cria os elementos da tarefa
   const li = document.createElement("li");
   const checkBtn = document.createElement("button");
   checkBtn.className = "check-btn";
@@ -126,22 +129,23 @@ function AddTask() {
   const del = document.createElement("span");
   del.className = "delete-btn";
   del.innerHTML = "\u00d7";
-
+// Adiciona os elementos à lista
   li.appendChild(checkBtn);
   li.appendChild(textSpan);
   li.appendChild(del);
-
+// Adiciona a nova tarefa ao contêiner da lista
   listContainer.appendChild(li);
-
+// Limpa a caixa de entrada e foca nela
   inputBox.value = "";
   inputBox.focus();
   saveData();
 }
+// Adiciona evento para adicionar tarefa ao clicar no botão
 inputBox.addEventListener("keypress", (e) => {
   if (e.key === "Enter") AddTask();
 });
 
-
+// Adiciona evento para manipular cliques na lista (concluir ou excluir tarefa)
 listContainer.addEventListener(
   "click",
   (e) => {
@@ -167,21 +171,21 @@ listContainer.addEventListener(
   false
 );
 
-
+// Salva os dados das tarefas no localStorage
 function saveData() {
   if (!currentDay) return;
   const all = JSON.parse(localStorage.getItem("tasksByDay") || "{}");
   all[currentDay] = listContainer.innerHTML;
   localStorage.setItem("tasksByDay", JSON.stringify(all));
 }
-
+// Mostra as tarefas do dia selecionado
 function showTask() {
   const all = JSON.parse(localStorage.getItem("tasksByDay") || "{}");
   listContainer.innerHTML = all[currentDay] || "";
   normalizeListItems();
 }
 
-
+// Inicializa a aplicação ao carregar a página
 window.onload = () => {
   renderWeekDays();
 
@@ -191,28 +195,28 @@ window.onload = () => {
   selectDay(todayIso);
   inputBox.focus();
 };
-
+// Normaliza os itens da lista para garantir a estrutura correta
 function normalizeListItems() {
-  
+  //
   Array.from(listContainer.querySelectorAll("li")).forEach((li) => {
     
     if (li.querySelector(".check-btn") && li.querySelector(".task-text")) return;
-
+// Extrai o texto da tarefa, removendo o símbolo de exclusão
     const text = li.textContent.replace("\u00d7", "").trim();
     li.innerHTML = "";
-
+// Cria o botão de check
     const checkBtn = document.createElement("button");
     checkBtn.className = "check-btn";
     checkBtn.setAttribute("aria-label", "Concluir tarefa");
-
+// Cria o span para o texto da tarefa
     const textSpan = document.createElement("span");
     textSpan.className = "task-text";
     textSpan.textContent = text;
-
+// Cria o botão de excluir
     const del = document.createElement("span");
     del.className = "delete-btn";
     del.innerHTML = "\u00d7";
-
+// Adiciona os elementos ao item da lista
     li.appendChild(checkBtn);
     li.appendChild(textSpan);
     li.appendChild(del);
