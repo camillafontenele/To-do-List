@@ -165,9 +165,11 @@ body{
     background:#fff;
     display:inline-flex;
     align-items:center;
-    justify-content:center;color:#fff;
+    justify-content:center;
+    color:#fff;
     cursor:pointer
 }
+
 .botao-checar::before{
     content:"";
     width:10px;
@@ -184,7 +186,6 @@ body{
     user-select:none
 }
 .botao-excluir{
-
     cursor:pointer;
     font-size:20px;
     margin-left:auto
@@ -203,4 +204,6 @@ body{
     border-left-color:#fff;
     border-bottom-color:#fff;
 }
+
+
 

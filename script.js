@@ -8,15 +8,15 @@ const mesAnoEl = document.getElementById("mes-ano");
 const botaoAdicionar = document.querySelector(".linha button");
 
 
-const diasSemanaAbrev = ["SEG", "TER", "QUA", "QUI", "SEX", "SAB", "DOM"];
+const diasSemanaAbrev = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
 
 
 let diaAtualIso = "";
 
-//função que retorna a segunda-feira da semana da data fornecida
-function obterSegundaFeira(d) {
+//função que retorna o domingo da semana da data fornecida
+function obterDomingo(d) {
   const data = new Date(d);
-  const diaSemana = (data.getDay() + 6) % 7;
+  const diaSemana = data.getDay(); // 0 = domingo
   data.setDate(data.getDate() - diaSemana);
   data.setHours(0, 0, 0, 0);
   return data;
@@ -33,12 +33,12 @@ function paraDataLocalISO(objData) {
 // Renderiza os botões dos dias da semana
 function renderizarDiasSemana() {
   const hoje = new Date();
-  const segunda = obterSegundaFeira(hoje);
+  const domingo = obterDomingo(hoje);
 
   barraDiasSemana.innerHTML = "";
   for (let i = 0; i < 7; i++) {
-    const data = new Date(segunda);
-    data.setDate(segunda.getDate() + i);
+    const data = new Date(domingo);
+    data.setDate(domingo.getDate() + i);
 
     const rotulo = diasSemanaAbrev[i];
     const numero = data.getDate();
@@ -79,10 +79,14 @@ function diaSelecionadoJaPassou(diaIso) {
 function atualizarEstadoControles(diaIso) {
   const desabilitar = diaSelecionadoJaPassou(diaIso);
   if (caixaEntrada) caixaEntrada.disabled = desabilitar;
-  if (botaoAdicionar) botaoAdicionar.disabled = desabilitar;
+  if (botaoAdicionar) {
+    botaoAdicionar.disabled = desabilitar;
+    botaoAdicionar.style.display = desabilitar ? "none" : "";
+  }
+
   if (caixaEntrada) {
     caixaEntrada.placeholder = desabilitar
-      ? "Dia passado — não é possível adicionar tarefas"
+      ? "Dia anterior — não é possível adicionar tarefas"
       : "Adicione uma nova tarefa...";
   }
   return desabilitar;
@@ -114,6 +118,7 @@ function capitalizarPrimeira(texto) {
   if (!texto) return texto;
   return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
+
 // Atualiza a data exibida no cabeçalho
 function atualizarCabecalhoData(objData) {
   if (!diaGrandeEl || !nomeDiaEl || !mesAnoEl) return;
@@ -136,23 +141,7 @@ function adicionarTarefa() {
     alert("Você deve escrever algo!");
     return;
   }
-  const li = document.createElement("li");
-  const botaoChecar = document.createElement("button");
-  botaoChecar.className = "botao-checar";
-  botaoChecar.setAttribute("aria-label", "Concluir tarefa");
-
-  const spanTexto = document.createElement("span");
-  spanTexto.className = "texto-tarefa";
-  spanTexto.textContent = caixaEntrada.value;
-
-  const botaoExcluir = document.createElement("span");
-  botaoExcluir.className = "botao-excluir";
-  botaoExcluir.innerHTML = "\u00d7";
-
-  li.appendChild(botaoChecar);
-  li.appendChild(spanTexto);
-  li.appendChild(botaoExcluir);
-
+  const li = criarItemTarefa(caixaEntrada.value);
   listaTarefas.appendChild(li);
 
   caixaEntrada.value = "";
@@ -179,14 +168,12 @@ listaTarefas.addEventListener(
       return;
     }
 
-    if (
-      target.classList.contains("botao-checar") ||
-      target.classList.contains("texto-tarefa") ||
-      target.tagName === "LI"
-    ) {
+    if (target.classList.contains("botao-checar")) {
       li.classList.toggle("concluida");
       salvarDados();
+      return;
     }
+
   },
   false
 );
@@ -222,21 +209,55 @@ window.onload = () => {
 };
 // Normaliza os itens da lista para garantir a estrutura correta
 function normalizarItensLista() {
+  let alterou = false;
   Array.from(listaTarefas.querySelectorAll("li")).forEach((li) => {
-    if (li.querySelector(".botao-checar") && li.querySelector(".texto-tarefa")) return;
-    const texto = li.textContent.replace("\u00d7", "").trim();
+    const temPainelAntigo = !!li.querySelector(".repetir-box, .rep-dia, .task-row");
+    const temBasico = li.querySelector(".botao-checar") && li.querySelector(".texto-tarefa");
+
+    if (!temPainelAntigo && temBasico) return;
+
+    const textoEl = li.querySelector(".texto-tarefa");
+    const texto = (textoEl ? textoEl.textContent : li.textContent.replace("\u00d7", "")).trim();
+    const estavaConcluida = li.classList.contains("concluida");
+
+    li.classList.remove("aberta");
     li.innerHTML = "";
+
     const botaoChecar = document.createElement("button");
     botaoChecar.className = "botao-checar";
     botaoChecar.setAttribute("aria-label", "Concluir tarefa");
+
     const spanTexto = document.createElement("span");
     spanTexto.className = "texto-tarefa";
     spanTexto.textContent = texto;
+
     const botaoExcluir = document.createElement("span");
     botaoExcluir.className = "botao-excluir";
     botaoExcluir.innerHTML = "\u00d7";
+
     li.appendChild(botaoChecar);
     li.appendChild(spanTexto);
     li.appendChild(botaoExcluir);
+
+    if (estavaConcluida) li.classList.add("concluida");
+    alterou = true;
   });
+  if (alterou) saveData();
+}
+
+function criarItemTarefa(texto) {
+  const li = document.createElement("li");
+  const botaoChecar = document.createElement("button");
+  botaoChecar.className = "botao-checar";
+  botaoChecar.setAttribute("aria-label", "Concluir tarefa");
+  const spanTexto = document.createElement("span");
+  spanTexto.className = "texto-tarefa";
+  spanTexto.textContent = texto;
+  const botaoExcluir = document.createElement("span");
+  botaoExcluir.className = "botao-excluir";
+  botaoExcluir.innerHTML = "\u00d7";
+  li.appendChild(botaoChecar);
+  li.appendChild(spanTexto);
+  li.appendChild(botaoExcluir);
+  return li;
 }
