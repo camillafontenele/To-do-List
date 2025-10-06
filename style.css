@@ -21,7 +21,7 @@ body{
   max-width:720px;
   margin:0 auto;
   color:#fff;
-  padding:20px 24px 16px;
+  padding:10px 24px 16px;
 }
 
 .cartao-data{
@@ -97,6 +97,11 @@ body{
 
 .botao-dia.ativo .numero-dia{
   border-color:#fff;
+}
+
+.botao-dia.passado .sigla-dia,
+.botao-dia.passado .numero-dia {
+  opacity: 0.5;
 }
 
 .conteiner{

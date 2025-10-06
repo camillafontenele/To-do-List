@@ -55,6 +55,10 @@ function renderizarDiasSemana() {
 
     const ehHoje = datasIguais(data, hoje);
     if (ehHoje) botao.classList.add("ativo");
+    
+    // Marca dias passados
+    const hojeIso = paraDataLocalISO(hoje);
+    if (iso < hojeIso) botao.classList.add("passado");
 
     barraDiasSemana.appendChild(botao);
   }
